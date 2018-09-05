@@ -3,10 +3,11 @@
 
 # introspector
 
-Introspector can help to access nested properties through 
-property selectors and to iterate through object, array, 
-string or function properties all the same intuitive and
-flexible (algorythmic) way.
+Introspector can help to access nested properties 
+through custom property selectors and to iterate 
+through object, array, string or function properties, 
+all of them through the same intuitive and flexible
+way.
 
 ## 1. Installation
 
@@ -415,4 +416,3 @@ This module that works the same way in browsers or Node.js environments can:
 
 
 
-# Read this file

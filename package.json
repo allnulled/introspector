@@ -1,0 +1,31 @@
+{
+  "name": "introspector",
+  "version": "1.0.0",
+  "description": "Introspector can help to access nested properties through custom property selectors and to iterate through object, array, string or function properties, all through the same intuitive and flexible way.",
+  "main": "src/introspector.js",
+  "scripts": {
+    "build": "js-export -i src/introspector.js -o dist/introspector.js",
+    "test": "mocha test/*.test.js",
+    "docs": "javadoc -i src/*.js -o README.md -f markdown"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "javadoc": "^1.0.3",
+    "js-exporter": "^1.0.2",
+    "mocha": "^5.2.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allnulled/introspector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/allnulled/introspector/issues"
+  },
+  "homepage": "https://github.com/allnulled/introspector#readme"
+}
