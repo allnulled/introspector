@@ -128,9 +128,9 @@ class Inspectable {
    * 
    * @type `{Function:Error}`
    * @description Error for Inspectable processes.
-   * @parameter `{String} name`. Name of the error.
-   * @parameter `{String} message`. Message of the error.
-   * @parameter `{Any} data`. Data attached to the error.
+   * @parameter `{String} name`. *Required*. Name of the error.
+   * @parameter `{String} message`. *Required*. Message of the error.
+   * @parameter `{Any} data`. *Optional*. Data attached to the error.
    * @returns `{Object:Error}`
    * 
    * 
@@ -149,7 +149,7 @@ class Inspectable {
    * 
    * @type `{Function:Constructor}`
    * @description Constructor for the `Inspectable` class.
-   * @parameter `{Object} data`. Data to be inspected.
+   * @parameter `{Object} data`. *Required*. Data to be inspected.
    * @parameter `{Object} options`. *Optional*. Options of the current `Inspectable` instance.
    * @returns `{Object:Inspectable}`
    * 
@@ -189,8 +189,8 @@ class Inspectable {
    * When a specified property is not accessible, it will return the `defaultValue`.
    * which by default is `undefined`.
    * 
-   * @parameter `{String} selector`. Selector to be retrieved from the `Inspectable.data`.
-   * @parameter `{Any} defaultValue`. Default value returned when the operation fails.
+   * @parameter `{String} selector`. *Required*. Selector to be retrieved from the `Inspectable.data`.
+   * @parameter `{Any} defaultValue`. *Optional*. Default value returned when the operation fails.
    * @returns `{Any}`
    * 
    */
@@ -251,8 +251,8 @@ class Inspectable {
    * 
    * When the operation was accomplished successfully, this method will return the `Inspectable` instance itself.
    * 
-   * @parameter `{String} selector`. Property selector from the `Inspectable.data`.
-   * @parameter `{Any} value`. New value for the selected property.
+   * @parameter `{String} selector`. *Required*. Property selector from the `Inspectable.data`.
+   * @parameter `{Any} value`. *Required*. New value for the selected property.
    * @returns `{Inspectable | undefined}`
    * 
    */
@@ -298,8 +298,8 @@ class Inspectable {
    * inspectable.get("a.b"); // > 400
    * ```
    * 
-   * @parameter `{String} selector`. Property selector to be (forcedly) set.
-   * @parameter `{Any} value`. New value for the property specified.
+   * @parameter `{String} selector`. *Required*. Property selector to be (forcedly) set.
+   * @parameter `{Any} value`. *Required*. New value for the property specified.
    * @returns `{Inspectable | undefined}`
    * 
    */
@@ -363,15 +363,15 @@ class Inspectable {
    * Inspector.from("1248").iterate((v,k,i,r,o) => r + parseInt(v), 0); // > 15
    * ```
    *
-   * Where the arguments `(k,v,i,r,o) => {...}` mean:
-   * 
-   *   · `k`: `key`. In objects and functions, the name of the property of the current item. In arrays and strings, the index of the current item.
+   * Where the arguments `(v,k,i,r,o) => {...}` mean:
    * 
    *   · `v`: `value`. Value of the current item.
    * 
+   *   · `k`: `key`. In objects and functions, the name of the property of the current item. In arrays and strings, the index of the current item.
+   * 
    *   · `i`: `index`. The number of the current iteration.
    * 
-   *   · `r`: `result`. The returned value (accumulative).
+   *   · `r`: `result`. The returned value (accumulative, it can be modified by making the iterator return some value other than `undefined`).
    * 
    *   · `o`: `original`. The original object/array/string/function.
    * 
@@ -387,13 +387,20 @@ class Inspectable {
    * method. Easily, one can emulate the `map` and `filter` functionality, but without caring about the input's type,
    * and having full control of the output's structure and content.
    * 
+   * @parameter `{Function} fn`. *Required*. Callback to be applied as iterator. 
+   * This function receives: `(value, key, index, result, original)`.
+   * When this function returns something other than `undefined`, this value is 
+   * understood as the value to be returned by the whole iteration. This way, one
+   * can emulate `map`, `filter` or `reduce` effortlessly.
+   * @parameter `{Any} initial`. First value.
+   * 
    */
-  iterate(fn, outStarter = undefined) {
+  iterate(fn, initial = undefined) {
     // @TOCOVER
     var keys = [];
     if (["object", "function","string"].indexOf(typeof this.data) !== -1) {
       var index = 0;
-      var output = outStarter;
+      var output = initial;
       var original = this.data;
       if(typeof original === "string") {
         original = original.split("");

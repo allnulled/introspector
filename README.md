@@ -131,11 +131,11 @@ expect(iterate1).to.deep.equal(1+2+4+8+16+32);
 
 **Description:** Error for Inspectable processes.
 
-**Parameter:** `{String} name`. Name of the error.
+**Parameter:** `{String} name`. *Required*. Name of the error.
 
-**Parameter:** `{String} message`. Message of the error.
+**Parameter:** `{String} message`. *Required*. Message of the error.
 
-**Parameter:** `{Any} data`. Data attached to the error.
+**Parameter:** `{Any} data`. *Optional*. Data attached to the error.
 
 **Returns:** `{Object:Error}`
 
@@ -155,7 +155,7 @@ expect(iterate1).to.deep.equal(1+2+4+8+16+32);
 
 **Description:** Constructor for the `Inspectable` class.
 
-**Parameter:** `{Object} data`. Data to be inspected.
+**Parameter:** `{Object} data`. *Required*. Data to be inspected.
 
 **Parameter:** `{Object} options`. *Optional*. Options of the current `Inspectable` instance.
 
@@ -198,9 +198,9 @@ When a specified property is not accessible, it will return the `defaultValue`.
 which by default is `undefined`.
 
 
-**Parameter:** `{String} selector`. Selector to be retrieved from the `Inspectable.data`.
+**Parameter:** `{String} selector`. *Required*. Selector to be retrieved from the `Inspectable.data`.
 
-**Parameter:** `{Any} defaultValue`. Default value returned when the operation fails.
+**Parameter:** `{Any} defaultValue`. *Optional*. Default value returned when the operation fails.
 
 **Returns:** `{Any}`
 
@@ -248,9 +248,9 @@ will not throw errors when it cannot complete the operation. Instead, it will re
 When the operation was accomplished successfully, this method will return the `Inspectable` instance itself.
 
 
-**Parameter:** `{String} selector`. Property selector from the `Inspectable.data`.
+**Parameter:** `{String} selector`. *Required*. Property selector from the `Inspectable.data`.
 
-**Parameter:** `{Any} value`. New value for the selected property.
+**Parameter:** `{Any} value`. *Required*. New value for the selected property.
 
 **Returns:** `{Inspectable | undefined}`
 
@@ -281,9 +281,9 @@ inspectable.get("a.b"); // > 400
 ```
 
 
-**Parameter:** `{String} selector`. Property selector to be (forcedly) set.
+**Parameter:** `{String} selector`. *Required*. Property selector to be (forcedly) set.
 
-**Parameter:** `{Any} value`. New value for the property specified.
+**Parameter:** `{Any} value`. *Required*. New value for the property specified.
 
 **Returns:** `{Inspectable | undefined}`
 
@@ -311,15 +311,15 @@ Inspector.from([1,2,4,8]).iterate((v,k,i,r,o) => r + v, 0); // > 15
 Inspector.from("1248").iterate((v,k,i,r,o) => r + parseInt(v), 0); // > 15
 ```
 
-Where the arguments `(k,v,i,r,o) => {...}` mean:
-
- · `k`: `key`. In objects and functions, the name of the property of the current item. In arrays and strings, the index of the current item.
+Where the arguments `(v,k,i,r,o) => {...}` mean:
 
  · `v`: `value`. Value of the current item.
 
+ · `k`: `key`. In objects and functions, the name of the property of the current item. In arrays and strings, the index of the current item.
+
  · `i`: `index`. The number of the current iteration.
 
- · `r`: `result`. The returned value (accumulative).
+ · `r`: `result`. The returned value (accumulative, it can be modified by making the iterator return some value other than `undefined`).
 
  · `o`: `original`. The original object/array/string/function.
 
@@ -334,6 +334,15 @@ as so to the next callback call. Where the iterations are done, the last value o
 This mechanism lets the developer play with the `reduction` functionality to customize the output of this
 method. Easily, one can emulate the `map` and `filter` functionality, but without caring about the input's type,
 and having full control of the output's structure and content.
+
+
+**Parameter:** `{Function} fn`. *Required*. Callback to be applied as iterator. 
+This function receives: `(value, key, index, result, original)`.
+When this function returns something other than `undefined`, this value is 
+understood as the value to be returned by the whole iteration. This way, one
+can emulate `map`, `filter` or `reduce` effortlessly.
+
+**Parameter:** `{Any} initial`. First value.
 
 
 
