@@ -195,7 +195,8 @@ class Inspectable {
    * 
    */
   get(selector, defaultValue = undefined) {
-    const props = selector.split(this.options.splitter);
+    // @TOCOVER
+    const props = ((""+selector).split)(this.options.splitter);
     const first = props.shift();
     if (!(first in this.data)) {
       return defaultValue;
@@ -256,8 +257,8 @@ class Inspectable {
    * 
    */
   set(selector, value) {
-    // @TODO
-    const props = selector.split(this.options.splitter);
+    // @TOCOVER
+    const props = ((""+selector).split)(this.options.splitter);
     var parent = undefined;
     var parentProperty = undefined;
     var results = this.data;
@@ -303,8 +304,8 @@ class Inspectable {
    * 
    */
   force(selector, value) {
-    // @TODO
-    const props = selector.split(this.options.splitter);
+    // @TOCOVER
+    const props = ((""+selector).split)(this.options.splitter);
     var parent = undefined;
     var parentProperty = undefined;
     var results = this.data;
@@ -336,7 +337,7 @@ class Inspectable {
         } else if (!hasProperties) {
           parent[parentProperty] = {};
           parent[parentProperty][this.options.overridenProperty] = results;
-          parent[parentProperty][prop] = {};
+          parent[parentProperty][prop] = value;
           results = parent[parentProperty][prop];
         }
       }
@@ -388,6 +389,7 @@ class Inspectable {
    * 
    */
   iterate(fn, outStarter = undefined) {
+    // @TOCOVER
     var keys = [];
     if (["object", "function","string"].indexOf(typeof this.data) !== -1) {
       var index = 0;
@@ -396,7 +398,7 @@ class Inspectable {
       if(typeof original === "string") {
         original = original.split("");
       }
-      for(var prop in ) {
+      for(var prop in original) {
         var out = fn(original[prop], prop, index++, output, original);
         if(typeof out !== "undefined") {
           output = out;

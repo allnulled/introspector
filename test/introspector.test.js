@@ -120,16 +120,61 @@ describe("Introspector class", function() {
     const fromData2 = Introspector.from(data2);
 
     const r1 = fromData2
-      .iterate(function(key, value, index, output, original) {
+      .iterate(function(value, key, index, output, original) {
         expect(parseInt(key)).to.equal(index);
         expect(value).to.equal(index + 1);
       })
-      .iterate((key, value, index, output, original) => output + value, 0);
+      .iterate((value, key, index, output, original) => output + value, 0);
 
-    expect(r1).to.equal(15+14+13+12+11+10+9+8+7+6+5+4+3+2+1);
+    expect(r1).to.equal(15 + 14 + 13 + 12 + 11 + 10 + 9 + 8 + 7 + 6 + 5 + 4 + 3 + 2 + 1);
 
     done();
 
+  });
+
+  it("works correct for the example of the documentation", function(done) {
+    const inspectable = Introspector.from([1,2,4,8]);
+    // Example with Inspectable#get(...)
+    const value0 = inspectable.get(0); // > 1
+    const value1 = inspectable.get(1); // > 2
+    const value2 = inspectable.get(2); // > 4
+    const value3 = inspectable.get(3); // > 8
+    const value4 = inspectable.get(4); // > undefined
+    const value5 = inspectable.get(5, null); // > null
+    // Example with Inspectable#set(...)
+    const set1 = inspectable.set(4, 16);
+    const set2 = inspectable.set(5, 32);
+    const set_value1 = inspectable.get(4); // > 16
+    const set_value2 = inspectable.get(5); // > 32
+    // Example with Inspectable#force(...)
+    const force1 = inspectable.force(6, 64);
+    const force2 = inspectable.force("6.a", 128);
+    const force3 = inspectable.force("6.b", 256);
+    const force_value1 = inspectable.get(6); // > { $:64, a:128, b:256 }
+    const force_value2 = inspectable.get("6.a"); // > 128
+    const force_value3 = inspectable.get("6.b"); // > 256
+    // Example with Inspectable#iterate(...)
+    const iterate1 = inspectable.iterate((v, k, i, r, o) => r + (typeof v === "number" ? v : 0), 0) // > 1+2+4+8+16+32
+    const iterate2 = inspectable.iterate((v, k, i, r, o) => {});
+    expect(value0).to.deep.equal(1);
+    expect(value1).to.deep.equal(2);
+    expect(value2).to.deep.equal(4);
+    expect(value3).to.deep.equal(8);
+    expect(value4).to.deep.equal(undefined);
+    expect(value5).to.deep.equal(null);
+    expect(set1).to.deep.equal(inspectable);
+    expect(set2).to.deep.equal(inspectable);
+    expect(set_value1).to.deep.equal(16);
+    expect(set_value2).to.deep.equal(32);
+    expect(force1).to.deep.equal(inspectable);
+    expect(force2).to.deep.equal(inspectable);
+    expect(force3).to.deep.equal(inspectable);
+    expect(force_value1).to.deep.equal({ $: 64, a: 128, b: 256 });
+    expect(force_value2).to.deep.equal(128);
+    expect(force_value3).to.deep.equal(256);
+    expect(iterate1).to.deep.equal(1 + 2 + 4 + 8 + 16 + 32);
+    expect(iterate2).to.deep.equal(inspectable);
+    done();
   });
 
 });
