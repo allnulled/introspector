@@ -392,7 +392,11 @@ class Inspectable {
    * When this function returns something other than `undefined`, this value is 
    * understood as the value to be returned by the whole iteration. This way, one
    * can emulate `map`, `filter` or `reduce` effortlessly.
-   * @parameter `{Any} initial`. First value.
+   * @parameter `{Any} initial`. *Optional*. First value.
+   * @returns `{Inspectable | Any}`. By default, it returns the `Inspectable` instance itself, 
+   * but when the `fn` call returns something other than `undefined`, it understands that this
+   * returned value is the new `result`, and the last value it takes is the value it finally 
+   * returns.
    * 
    */
   iterate(fn, initial = undefined) {
