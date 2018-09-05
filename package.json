@@ -2,9 +2,9 @@
   "name": "introspector",
   "version": "1.0.0",
   "description": "Introspector can help to access nested properties through custom property selectors and to iterate through object, array, string or function properties, all through the same intuitive and flexible way.",
-  "main": "src/introspector.js",
+  "main": "dist/introspector.js",
   "scripts": {
-    "upload": "./upload.sh",
+    "upload": "sh upload.sh",
     "build": "js-export -i src/introspector.js -o dist/introspector.js",
     "test": "mocha test/*.test.js",
     "docs": "javadoc -i src/*.js -o README.md -f markdown"

@@ -349,7 +349,7 @@ class Inspectable {
    * 
    * ----
    * 
-   * ### `Inspectable#iterate(Function:fn, Any:initial = undefined)
+   * ### `Inspectable#iterate(Function:fn, Any:initial = undefined)`
    * 
    * @type `{Function:Class method}`
    * @description This method iterates through an array, object, string or function properties

@@ -295,7 +295,7 @@ inspectable.get("a.b"); // > 400
 
 ----
 
-### `Inspectable#iterate(Function:fn, Any:initial = undefined)
+### `Inspectable#iterate(Function:fn, Any:initial = undefined)`
 
 
 **Type:** `{Function:Class method}`
