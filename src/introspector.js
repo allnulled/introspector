@@ -4,6 +4,8 @@
  * 
  * # introspector
  * 
+ * ![](https://img.shields.io/badge/introspector-v1.0.0-green.svg) ![](https://img.shields.io/badge/tests-passing-green.svg) ![](https://img.shields.io/badge/statements--coverage-100%25-green.svg) ![](https://img.shields.io/badge/branches--coverage-100%25-green.svg) ![](https://img.shields.io/badge/functions--coverage-100%25-green.svg) ![](https://img.shields.io/badge/lines--coverage-100%25-green.svg) 
+ * 
  * Introspector can help to access nested properties 
  * through custom property selectors and to iterate 
  * through object, array, string or function properties, 
@@ -126,7 +128,7 @@ class Inspectable {
    *
    * ### `Inspectable.Error`
    * 
-   * @type `{Function:Error}`
+   * @type `{Class:Error}`
    * @description Error for Inspectable processes.
    * @parameter `{String} name`. *Required*. Name of the error.
    * @parameter `{String} message`. *Required*. Message of the error.
@@ -136,8 +138,10 @@ class Inspectable {
    * 
    */
   static get Error() {
-    return function(name, message, data) {
-      return new Error(name, message, data);
+    return class InspectableError extends Error {
+      constructor(name, message, data) {
+        super({name, message, data});
+      }
     };
   }
 
@@ -196,16 +200,24 @@ class Inspectable {
    */
   get(selector, defaultValue = undefined) {
     // @TOCOVER
-    const props = ((""+selector).split)(this.options.splitter);
+    const props = (("" + selector).split)(this.options.splitter);
     const first = props.shift();
-    if (!(first in this.data)) {
+    const isValid = (
+      (typeof(this.data) === "string") && (first in this.data.split("")) ||
+      ((["object", "function"].indexOf(typeof this.data) !== -1) && (first in this.data))
+    );
+    if (!isValid) {
       return defaultValue;
-      // throw Inspectable.Error("PropertyNotFound", "First property not found:", first);
+      // throw Inspectable.Error("PropertyNotFound", "Property not found:", prop);
     }
     var results = this.data[first];
     for (var a = 0; a < props.length; a++) {
       const prop = props[a];
-      if ((["object", "function"].indexOf(typeof results) === -1) || (!(prop in results))) {
+      const isValid = (
+        (typeof(results) === "string") && (prop in results.split("")) ||
+        ((["object", "function"].indexOf(typeof results) !== -1) && (prop in results))
+      );
+      if (!isValid) {
         return defaultValue;
         // throw Inspectable.Error("PropertyNotFound", "Property not found:", prop);
       }
@@ -258,7 +270,7 @@ class Inspectable {
    */
   set(selector, value) {
     // @TOCOVER
-    const props = ((""+selector).split)(this.options.splitter);
+    const props = (("" + selector).split)(this.options.splitter);
     var parent = undefined;
     var parentProperty = undefined;
     var results = this.data;
@@ -266,7 +278,7 @@ class Inspectable {
       const prop = props[a];
       if (a === props.length - 1) {
         results[prop] = value;
-      } else if (["object", "function"].indexOf(typeof results) !== -1 && prop in results) {
+      } else if (["object", "function", "string"].indexOf(typeof results) !== -1 && prop in results) {
         parent = results;
         parentProperty = prop;
         results = results[prop];
@@ -305,7 +317,7 @@ class Inspectable {
    */
   force(selector, value) {
     // @TOCOVER
-    const props = ((""+selector).split)(this.options.splitter);
+    const props = (("" + selector).split)(this.options.splitter);
     var parent = undefined;
     var parentProperty = undefined;
     var results = this.data;
@@ -323,7 +335,7 @@ class Inspectable {
           parent = results;
           parentProperty = prop;
           results = results[prop];
-        } else if (!hasProperties) {
+        } else {
           parent[parentProperty] = {};
           parent[parentProperty][this.options.overridenProperty] = results;
           parent[parentProperty][prop] = {};
@@ -331,10 +343,10 @@ class Inspectable {
           parent = parent[parentProperty];
           parentProperty = prop;
         }
-      } else if (isLast) {
+      } else {
         if (hasProperties) {
           results[prop] = value;
-        } else if (!hasProperties) {
+        } else {
           parent[parentProperty] = {};
           parent[parentProperty][this.options.overridenProperty] = results;
           parent[parentProperty][prop] = value;
@@ -402,25 +414,25 @@ class Inspectable {
   iterate(fn, initial = undefined) {
     // @TOCOVER
     var keys = [];
-    if (["object", "function","string"].indexOf(typeof this.data) !== -1) {
+    if (["object", "function", "string"].indexOf(typeof this.data) !== -1) {
       var index = 0;
       var output = initial;
       var original = this.data;
-      if(typeof original === "string") {
+      if (typeof original === "string") {
         original = original.split("");
       }
-      for(var prop in original) {
+      for (var prop in original) {
         var out = fn(original[prop], prop, index++, output, original);
-        if(typeof out !== "undefined") {
+        if (typeof out !== "undefined") {
           output = out;
         }
       }
-      if(typeof output !== "undefined") {
+      if (typeof output !== "undefined") {
         return output;
       } else {
         return this;
       }
-    } else throw Inspectable.Error("NotIterableArgument", "Argument provided is not iterable", this.data);
+    } else throw new Inspectable.Error("NotIterableArgument", "Argument provided is not iterable", this.data);
   }
 
 }

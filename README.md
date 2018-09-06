@@ -3,6 +3,8 @@
 
 # introspector
 
+![](https://img.shields.io/badge/introspector-v1.0.0-green.svg) ![](https://img.shields.io/badge/tests-passing-green.svg) ![](https://img.shields.io/badge/statements--coverage-100%25-green.svg) ![](https://img.shields.io/badge/branches--coverage-100%25-green.svg) ![](https://img.shields.io/badge/functions--coverage-100%25-green.svg) ![](https://img.shields.io/badge/lines--coverage-100%25-green.svg) 
+
 Introspector can help to access nested properties 
 through custom property selectors and to iterate 
 through object, array, string or function properties, 
@@ -127,7 +129,7 @@ expect(iterate1).to.deep.equal(1+2+4+8+16+32);
 ### `Inspectable.Error`
 
 
-**Type:** `{Function:Error}`
+**Type:** `{Class:Error}`
 
 **Description:** Error for Inspectable processes.
 
